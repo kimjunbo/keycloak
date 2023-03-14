@@ -142,7 +142,9 @@ public class AuthService {
         UserDto user = new UserDto();
         user.setUsername(username);
         user.setUserRole(userRoles.toString());
+        if (kakaotalk_profile!=null)
         user.setKakaotalk_profile(kakaotalk_profile);
+        if(daum_profile!=null)
         user.setDaum_profile(daum_profile);
 
         return user;
