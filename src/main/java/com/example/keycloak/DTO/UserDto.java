@@ -18,7 +18,7 @@ public class UserDto {
     private int status;
     private String statusInfo;
 
-    private String daum_thumbnail;
-    private String kakaotalk_thumbnail;
+    private String daum_profile;
+    private String kakaotalk_profile;
 
 }

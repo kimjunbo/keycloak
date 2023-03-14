@@ -136,14 +136,14 @@ public class AuthService {
 
 
         // custom user attribute
-        String kakaotalk_thumbnail = String.valueOf(accessToken.getOtherClaims().get("kakaotalk_thumbnail"));
-        String daum_thumbnail = String.valueOf(accessToken.getOtherClaims().get("daum_thumbnail"));
+        String kakaotalk_profile = String.valueOf(accessToken.getOtherClaims().get("kakaotalk_profile"));
+        String daum_profile = String.valueOf(accessToken.getOtherClaims().get("daum_profile"));
 
         UserDto user = new UserDto();
         user.setUsername(username);
         user.setUserRole(userRoles.toString());
-        user.setKakaotalk_thumbnail(kakaotalk_thumbnail);
-        user.setDaum_thumbnail(daum_thumbnail);
+        user.setKakaotalk_profile(kakaotalk_profile);
+        user.setDaum_profile(daum_profile);
 
         return user;
     }
