@@ -20,5 +20,6 @@ public class UserDto {
 
     private String daum_profile;
     private String kakaotalk_profile;
+    private String profile;
 
 }

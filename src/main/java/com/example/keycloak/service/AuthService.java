@@ -138,13 +138,16 @@ public class AuthService {
         // custom user attribute
         String kakaotalk_profile = String.valueOf(accessToken.getOtherClaims().get("kakaotalk_profile"));
         String daum_profile = String.valueOf(accessToken.getOtherClaims().get("daum_profile"));
+        String profile = String.valueOf(accessToken.getOtherClaims().get("profile"));
+
 
         UserDto user = new UserDto();
         user.setUsername(username);
         user.setUserRole(userRoles.toString());
-        if (kakaotalk_profile!=null)
+        user.setProfile(profile);
+        if (kakaotalk_profile!="null")
         user.setKakaotalk_profile(kakaotalk_profile);
-        if(daum_profile!=null)
+        if(daum_profile!="null")
         user.setDaum_profile(daum_profile);
 
         return user;
