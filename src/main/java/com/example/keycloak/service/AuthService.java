@@ -3,6 +3,8 @@ package com.example.keycloak.service;
 import com.example.keycloak.DTO.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
@@ -10,19 +12,19 @@ import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
+import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.ws.rs.core.Response;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -50,7 +52,7 @@ public class AuthService {
         // 유저정보 세팅
         UserRepresentation user = new UserRepresentation();
         user.setEnabled(true);
-        user.setUsername(userDto.getEmail());
+        user.setUsername(userDto.getUsername());
 
         // Get realm
         RealmResource realmResource = keycloak.realm(realm);
@@ -74,7 +76,10 @@ public class AuthService {
 
             // role 세팅
             ClientRepresentation clientRep = realmResource.clients().findByClientId(clientId).get(0);
-            RoleRepresentation clientRoleRep = realmResource.clients().get(clientRep.getId()).roles().get(userDto.getUserRole().getCode()).toRepresentation();
+            RoleRepresentation clientRoleRep = realmResource
+                    .clients().get(clientRep.getId())
+                    .roles().get(userDto.getUserRole())
+                    .toRepresentation();
             userResource.roles().clientLevel(clientRep.getId()).add(Arrays.asList(clientRoleRep));
 
         }
@@ -95,7 +100,7 @@ public class AuthService {
         AuthzClient authzClient = AuthzClient.create(configuration);
 
         AccessTokenResponse response =
-                authzClient.obtainAccessToken(userDto.getEmail(), userDto.getPassword());
+                authzClient.obtainAccessToken(userDto.getUsername(), userDto.getPassword());
 
         return response;
     }
@@ -103,14 +108,43 @@ public class AuthService {
     /*
      *  사용자 존재하는지 체크
      * */
-    public boolean existsByUsername(String userName) {
+    public boolean existsByUsername(String username) {
 
         List<UserRepresentation> search = keycloak.realm(realm).users()
-                .search(userName);
+                .search(username);
         if(search.size() > 0){
             log.debug("search : {}", search.get(0).getUsername());
             return true;
         }
         return false;
+    }
+
+    public UserDto userInfo(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        KeycloakPrincipal principal = (KeycloakPrincipal) auth.getPrincipal();
+
+        KeycloakSecurityContext session = principal.getKeycloakSecurityContext();
+        AccessToken accessToken = session.getToken();
+
+        String username = accessToken.getPreferredUsername();
+
+        // 기본 keycloak attribute
+        AccessToken.Access resourceAccess = accessToken.getResourceAccess(clientId);
+
+        Set<String> userRoles = resourceAccess.getRoles();
+
+
+        // custom user attribute
+        String kakaotalk_thumbnail = String.valueOf(accessToken.getOtherClaims().get("kakaotalk_thumbnail"));
+        String daum_thumbnail = String.valueOf(accessToken.getOtherClaims().get("daum_thumbnail"));
+
+        UserDto user = new UserDto();
+        user.setUsername(username);
+        user.setUserRole(userRoles.toString());
+        user.setKakaotalk_thumbnail(kakaotalk_thumbnail);
+        user.setDaum_thumbnail(daum_thumbnail);
+
+        return user;
     }
 }

@@ -18,23 +18,31 @@ public class TestController {
 
     @GetMapping("/authenticated")
     public ResponseEntity<String> authenticated(@RequestHeader String Authorization) {
-//    public ResponseEntity<String> authenticated(@RequestHeader String Authorization) {
-//        log.debug(Authorization);
         return ResponseEntity.ok("로그인한 사람 누구나 가능합니다.\n");
     }
 
-    @PreAuthorize("hasAnyRole('USER')")
-    @GetMapping("/user")
-    public ResponseEntity<String> user(@RequestHeader String Authorization) {
-        return ResponseEntity.ok("user 가능합니다.\n");
+    @PreAuthorize("hasAnyRole('daum_user')")
+    @GetMapping("/daum_user")
+    public ResponseEntity<String> daum_user(@RequestHeader String Authorization) {
+        return ResponseEntity.ok("daum user 가능합니다.\n");
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @GetMapping("/admin")
-    public ResponseEntity<String> admin(@RequestHeader String Authorization) {
-//    public ResponseEntity<String> admin(@RequestHeader String Authorization) {
-//        log.debug(Authorization);
-        return ResponseEntity.ok("admin 가능합니다.\n");
+    @PreAuthorize("hasAnyRole('daum_admin')")
+    @GetMapping("/daum_admin")
+    public ResponseEntity<String> daum_admin(@RequestHeader String Authorization) {
+        return ResponseEntity.ok("daum admin 가능합니다.\n");
+    }
+
+    @PreAuthorize("hasAnyRole('kakaotalk_user')")
+    @GetMapping("/kakaotalk_user")
+    public ResponseEntity<String> kakaotalk_user(@RequestHeader String Authorization) {
+        return ResponseEntity.ok("kakaotalk_user 가능합니다.\n");
+    }
+
+    @PreAuthorize("hasAnyRole('kakaotalk_admin')")
+    @GetMapping("/kakaotalk_admin")
+    public ResponseEntity<String> kakaotalk_admin(@RequestHeader String Authorization) {
+        return ResponseEntity.ok("kakaotalk_admin 가능합니다.\n");
     }
 
 }

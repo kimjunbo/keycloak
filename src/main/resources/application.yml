@@ -1,12 +1,12 @@
 keycloak:
   enabled: true
-  realm: hello-realm
+  realm: kakao
   auth-server-url: http://localhost:8080
   #기본값은 외부 요청에 HTTPS가 기본적으로 필요하다는 외부 의미 유효한 값은 'all', 'external', 'none'
   ssl-required: external
-  resource: hello-client
+  resource: daum
   credentials:
-    secret: uuTtwyVDskZBhCdNDU3Uz7MZkzlDVKBK
+    secret: BUXPklutbeYYoioHwPd1HjNHQqHDpIre
   use-resource-role-mappings: true
   bearer-only: true
 
