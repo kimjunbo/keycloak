@@ -47,8 +47,6 @@ public class AuthService {
 
     public UserDto createUser(UserDto userDto) {
 
-        log.info("sdfjksef");
-
         // 유저정보 세팅
         UserRepresentation user = new UserRepresentation();
         user.setEnabled(true);
@@ -138,8 +136,7 @@ public class AuthService {
         // custom user attribute
         String kakaotalk_profile = String.valueOf(accessToken.getOtherClaims().get("kakaotalk_profile"));
         String daum_profile = String.valueOf(accessToken.getOtherClaims().get("daum_profile"));
-        String profile = String.valueOf(accessToken.getOtherClaims().get("profile"));
-
+        String profile = accessToken.getProfile();
 
         UserDto user = new UserDto();
         user.setUsername(username);
